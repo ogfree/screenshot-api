@@ -49,7 +49,7 @@ def screenshot(
     chrome_cmd.append(url)
 
     try:
-        result = subprocess.run(chrome_cmd, check=True, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(chrome_cmd, check=True, capture_output=True, text=True, timeout=90)
     except subprocess.CalledProcessError as e:
         return JSONResponse({"error": "Chrome failed", "details": e.stderr}, status_code=500)
     except subprocess.TimeoutExpired:
