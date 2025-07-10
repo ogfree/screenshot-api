@@ -1,10 +1,10 @@
-# Base Python image (slim for small size)
+# Use slim Python base
 FROM python:3.11-slim
 
-# Avoid interactive prompts during package install
+# Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install Chrome + dependencies
+# Install Chrome dependencies
 RUN apt-get update && apt-get install -y \
     wget gnupg ca-certificates unzip \
     fonts-liberation libnss3 libxss1 libasound2 libatk-bridge2.0-0 \
@@ -17,18 +17,21 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     apt-get update && apt-get install -y google-chrome-stable && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create app directory
+# Set working dir
 WORKDIR /app
 
-# Copy and install Python dependencies
+# Copy dependencies first and install them
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your app code
+# Copy the rest of the app
 COPY . .
 
-# Expose the port FastAPI will run on
+# Make sure the script is executable
+RUN chmod +x start.sh
+
+# Expose FastAPI port
 EXPOSE 10000
 
-# Start script to launch FastAPI
+# Start FastAPI server
 CMD ["./start.sh"]
